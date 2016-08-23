@@ -1,6 +1,8 @@
+require "./exceptions"
+
 module BoJack
   class Memory(K, V)
-    class InvalidKey < Exception; end
+    class InvalidKey < BoJack::Exceptions::Runtime; end
 
     struct Entry(V)
       getter value

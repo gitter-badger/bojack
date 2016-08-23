@@ -1,8 +1,9 @@
 require "./commands/*"
+require "./exceptions"
 
 module BoJack
   module Command
-    class InvalidCommand < Exception; end
+    class InvalidCommand < BoJack::Exceptions::Runtime; end
 
     COMMANDS = {
       "append" => BoJack::Commands::Append,

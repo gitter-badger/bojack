@@ -30,7 +30,7 @@ describe BoJack::Commands::Command do
 
     describe "when the param is not present" do
       it "raises proper error" do
-        expect_raises(BoJack::Commands::Command::MissingRequiredParam, "Param 'foo' is required but not present") do
+        expect_raises(BoJack::Commands::MissingRequiredParam, "Param 'foo' is required but not present") do
           FakeCommand.new.run(socket, memory, params)
         end
       end

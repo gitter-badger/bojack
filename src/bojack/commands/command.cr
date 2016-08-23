@@ -1,7 +1,10 @@
+require "../exceptions"
+
 module BoJack
   module Commands
+    class MissingRequiredParam < BoJack::Exceptions::Runtime; end
+
     abstract class Command
-      class MissingRequiredParam < Exception; end
       def initialize
         @params = Hash(Symbol, String | Array(String)).new
       end
@@ -18,7 +21,7 @@ module BoJack
       private abstract def validate
 
       private def required(name : Symbol)
-        raise BoJack::Commands::Command::MissingRequiredParam.new("Param '#{name}' is required but not present") unless @params.has_key?(name)
+        raise BoJack::Commands::MissingRequiredParam.new("param '#{name}' is required but not present") unless @params.has_key?(name)
       end
     end
   end

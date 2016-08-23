@@ -12,13 +12,13 @@ module BoJack
       @logger.formatter = Logger::Formatter.new do |severity, datetime, progname, message, io|
         io << "[bojack][#{hostname}:#{port}][#{datetime}][#{severity}] #{message}"
       end
+      @memory = BoJack::Memory(String, Array(String)).new
     end
 
     def start
       server = TCPServer.new(@hostname, @port)
       server.tcp_nodelay = true
       server.recv_buffer_size = 4096
-      memory = BoJack::Memory(String, Array(String)).new
 
       @logger.info("Server started on #{@hostname}:#{@port}")
 
@@ -28,30 +28,35 @@ module BoJack
 
           spawn do
             loop do
-              request = socket.gets
-              break unless request
-
-              @logger.info("#{socket.remote_address} requested: #{request.strip}")
-
               begin
-                params = parse_request(request)
-                command = BoJack::Command.from(params[:command])
+                request = socket.gets
 
-                response = command.run(socket, memory, params)
+                break unless request
+                @logger.info("#{socket.remote_address} requested: #{request.strip}")
 
-                if command.is_a?(BoJack::Commands::Close)
-                  break
-                end
-
+                response = handle_request(request)
                 socket.puts(response)
-              rescue e
-                message = "error: #{e.message}"
-                @logger.error(message)
-                socket.puts(message)
+              rescue e : BoJack::Exceptions::Fatal
+                @logger.error(e.message)
+                socket.close
+                break
               end
             end
           end
         end
+      end
+    end
+
+    private def handle_request(request : String)
+       begin
+        params = parse_request(request)
+        command = BoJack::Command.from(params[:command])
+
+        response = command.run([0], @memory, params)
+        response
+      rescue e : BoJack::Exceptions::Runtime
+        #response = "error: #{e.message}"
+        #@logger.error(response)
       end
     end
 

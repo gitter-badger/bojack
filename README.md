@@ -18,10 +18,10 @@
 ## Showtime
 
 1. To start the server, run: `bojack server`
-2. To connect a client, in another tab, run: `bojack client`
+2. In another tab, run: `bojack console`
 
 ```
-$ bojack client
+$ bojack console
 > set foo bar
 bar
 > get foo
@@ -36,10 +36,10 @@ pong
 
 ### CLI
 
-Currently the command-line interface supports two commands: `server` and `client`.
+Currently the command-line interface supports two commands: `server` and `console`.
 
 ```
-bojack <server/client> <flags>
+bojack <server/console> <flags>
 ```
 
 ### Server
@@ -50,7 +50,7 @@ bojack <server/client> <flags>
 |--port|Port the server will run|5000|
 |--log-level|Level of messages logged|DEBUG = 0, INFO = 1 (default), WARN = 2, ERROR = 3, FATAL = 4|
 
-### Client
+### Console
 
 |flag|description|default|
 |---|---|---|---|
